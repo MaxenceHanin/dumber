@@ -1,0 +1,39 @@
+@startuml
+skinparam monochrome true
+start
+
+:th_Periodic_Image?;
+
+repeat
+
+:rt_wait_period(100 ms);  
+
+if (Camera.isOpen) then (true)
+:Img img = Camera.Grab;
+
+if (Position) then (yes)
+:pos = searchRobot(getArena);
+
+if(Pos.isEmpty) then (true)
+:p = new MessagePos(MESSAGE_CAM_POSITION, (-1,-1);
+else (false)
+:p = new MessagePos(MESSAGE_CAM_POSITION, pos);
+:drawRobot(pos);
+endif
+
+:WriteInQueue(toMonitor, p);
+
+endif
+
+:MessageImg *msgImg = new MessageImg(MESSAGE_CAM_IMAGE, img);
+:WriteInQueue(toMonitor, msgImg);
+
+else (false)
+:print("Camera is closed");
+
+
+
+endif
+
+repeat while (loop)
+@enduml

@@ -1,0 +1,15 @@
+Modélisation caméra : 
+- Sémaphore sur l'ouverture de la caméra pour la bloquer tant qu'on a pas le message au niveau du moniteur
+- A la fin du thread d'ouverture, débloquage du sémaphore pour l'envoi périodique simple 
+- A la réception du msg de calibrage, débloquage du sémaphore de calibrage, dès l'entrée de la fonction de calibrage, on bloque le sémaphore périodique
+- Il y aura un mutex sur l'objet Camera 
+- Il y aura un mutex lié à une variable qui indique si l'on est en mode image simple ou image + position
+
+Sémaphore : 
+- Ouverture caméra
+- Lancement tâche périodique image à la fin du thread d'ouverture
+- Lancement calibration
+
+Mutex : 
+- Accès objet caméra (plus prioritaire sur le thread de calibration, qui bloquera donc l'envoi périodique vu qu'il prend le mutex pendant son exécution)
+- Variable d'indication de mode de capture d'image (0 si image simple, 1 si image + position)

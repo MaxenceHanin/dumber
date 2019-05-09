@@ -1,0 +1,12 @@
+@startuml
+skinparam monochrome true
+start
+:status = camera.Open();
+if (status) then (failed)
+:writeInQueue(toMonitor, "Unable to start camera");
+stop
+else (succeed)
+:th_PeriodicImage!;
+stop
+endif
+@enduml

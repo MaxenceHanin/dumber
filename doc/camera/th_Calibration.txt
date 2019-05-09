@@ -1,0 +1,35 @@
+@startuml
+skinparam monochrome true
+start
+
+:th_Calibration?;
+
+if (Camera.isOpen) then (true)
+:Img img = Camera.Grab;
+
+:a = searchArena(img);
+if(a) then (null)
+:drawArena(a);
+:MessageImg *msgImg = new MessageImg(MESSAGE_CAM_IMAGE, img);
+:WriteInQueue(toMonitor, msgImg);
+
+:ack?;
+
+if(ack) then (ACK)
+:Arena = a;
+else (NACK)
+
+endif
+
+else (null)
+:print(NACK);
+
+endif;
+stop
+
+else (false)
+:print("Camera is closed");
+stop
+
+endif
+@enduml

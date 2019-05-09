@@ -1,0 +1,21 @@
+@startuml
+skinparam monochrome true
+start
+
+if (Camera.isOpen) then (true)
+:stopPeriodicImage!;
+:status = Camera.close;
+
+if (status) then (success)
+:writeInQueue(toMonitor, "Camera closed");
+stop
+else (failure)
+:writeInQueue(toMonitor, "Couldn't close camera");
+stop
+endif
+
+else (false)
+:print("Camera is already closed");
+stop
+endif
+@enduml
