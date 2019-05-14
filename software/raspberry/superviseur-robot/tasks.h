@@ -149,6 +149,11 @@ private:
     void StartRobotTask(void *arg);
     
     /**
+     * @brief Thread starting watchdog for startRobotWithWD.
+     */
+    void Watchdog(void *arg);
+    
+    /**
      * @brief Thread handling control of the robot.
      */
     void MoveTask(void *arg);
