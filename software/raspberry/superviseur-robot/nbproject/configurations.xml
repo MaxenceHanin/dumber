@@ -4,6 +4,8 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>lib/AutoResetEvent.h</itemPath>
+      <itemPath>lib/Watchdog.h</itemPath>
       <itemPath>./lib/base64/base64.h</itemPath>
       <itemPath>./lib/camera.h</itemPath>
       <itemPath>./lib/commonitor.h</itemPath>
@@ -20,6 +22,8 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>lib/AutoResetEvent.cpp</itemPath>
+      <itemPath>lib/Watchdog.cpp</itemPath>
       <itemPath>./lib/base64/base64.cpp</itemPath>
       <itemPath>./lib/camera.cpp</itemPath>
       <itemPath>./lib/commonitor.cpp</itemPath>
@@ -113,6 +117,14 @@
       </item>
       <item path="./tasks.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="lib/AutoResetEvent.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lib/AutoResetEvent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lib/Watchdog.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lib/Watchdog.h" ex="false" tool="3" flavor2="0">
+      </item>
     </conf>
     <conf name="Debug__RPI_" type="1">
       <toolsSet>
@@ -183,6 +195,14 @@
       <item path="./tasks.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="./tasks.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lib/AutoResetEvent.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lib/AutoResetEvent.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="lib/Watchdog.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="lib/Watchdog.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>
