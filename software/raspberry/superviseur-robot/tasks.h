@@ -73,10 +73,13 @@ private:
     RT_TASK th_server;
     RT_TASK th_sendToMon;
     RT_TASK th_receiveFromMon;
+    RT_TASK th_closeComMon;
     RT_TASK th_openComRobot;
+    RT_TASK th_closeComRobot;
     RT_TASK th_startRobot;
     RT_TASK th_move;
     RT_TASK th_battery;
+    
     /**********************************************************************/
     /* Mutex                                                              */
     /**********************************************************************/
@@ -92,6 +95,9 @@ private:
     RT_SEM sem_openComRobot;
     RT_SEM sem_serverOk;
     RT_SEM sem_startRobot;
+    RT_SEM sem_closeComMon;
+    RT_SEM sem_closeComRobot;
+   
 
     /**********************************************************************/
     /* Message queues                                                     */
@@ -117,10 +123,20 @@ private:
      */
     void ReceiveFromMonTask(void *arg);
     
+     /**
+     * @brief Thread closing communications with monitor.
+     */
+    void CloseComMon(void *arg);
+    
     /**
      * @brief Thread opening communication with the robot.
      */
     void OpenComRobot(void *arg);
+    
+     /**
+     * @brief Thread closing communication with the robot.
+     */
+    void CloseComRobot(void *arg);
 
     /**
      * @brief Thread starting the communication with the robot.
