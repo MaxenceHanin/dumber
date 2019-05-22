@@ -212,7 +212,7 @@ void Tasks::Run() {
         cerr << "Error task start: " << strerror(-err) << endl << flush;
         exit(EXIT_FAILURE);
     }
-    if (err = rt_task_start(&th_closeComMon, (void(*)(void*)) & Tasks::ReceiveFromMonTask, this)) {
+    if (err = rt_task_start(&th_closeComMon, (void(*)(void*)) & Tasks::CloseComMon, this)) {
         cerr << "Error task start: " << strerror(-err) << endl << flush;
         exit(EXIT_FAILURE);
     }
@@ -220,7 +220,7 @@ void Tasks::Run() {
         cerr << "Error task start: " << strerror(-err) << endl << flush;
         exit(EXIT_FAILURE);
     }
-     if (err = rt_task_start(&th_closeComRobot, (void(*)(void*)) & Tasks::OpenComRobot, this)) {
+     if (err = rt_task_start(&th_closeComRobot, (void(*)(void*)) & Tasks::CloseComRobot, this)) {
         cerr << "Error task start: " << strerror(-err) << endl << flush;
         exit(EXIT_FAILURE);
         
