@@ -487,7 +487,7 @@ void Tasks::WatchdogTask(void *arg) {
     	robot.Open(); 
     	rt_mutex_release(&mutex_robot);
 	rt_mutex_acquire(&mutex_robotStarted, TM_INFINITE);
-    	robotStarted = 0
+    	robotStarted = 0;
    	rt_mutex_release(&mutex_robotStarted);
 }
 
