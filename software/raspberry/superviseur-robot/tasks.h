@@ -83,6 +83,7 @@ private:
     RT_TASK th_battery;
     RT_TASK th_startCamera;
     RT_TASK th_periodicImage;
+    RT_TASK th_watchdog;
     /**********************************************************************/
     /* Mutex                                                              */
     /**********************************************************************/
@@ -103,6 +104,7 @@ private:
     RT_SEM sem_closeComRobot;
     RT_SEM sem_startCamera;
     RT_SEM sem_periodicImage;
+    RT_SEM sem_watchdog;
 
     /**********************************************************************/
     /* Message queues                                                     */
