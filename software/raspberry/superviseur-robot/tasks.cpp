@@ -498,6 +498,7 @@ void Tasks::StartRobotTask(void *arg) {
     cout << "Start " << __PRETTY_FUNCTION__ << endl << flush;
     // Synchronization barrier (waiting that all tasks are starting)
     rt_sem_p(&sem_barrier, TM_INFINITE);
+    
     while(1) {
 	    Message * msgSend;
 	    rt_sem_p(&sem_startRobot, TM_INFINITE);
@@ -505,7 +506,7 @@ void Tasks::StartRobotTask(void *arg) {
 	    rt_mutex_acquire(&mutex_robot, TM_INFINITE);
 	    if(is_with_WD){
 	    	msgSend = robot.Write(robot.StartWithWD());
-		//rt_sem_v(&sem_WD);
+		rt_sem_v(&sem_WD);
 	    }
 	    else {
 	    	msgSend = robot.Write(robot.StartWithoutWD());
@@ -522,9 +523,8 @@ void Tasks::StartRobotTask(void *arg) {
 			robotStarted = 1;
 			rt_mutex_release(&mutex_robotStarted);
 		    }
-		}
-	    } 
-}
+    }
+} 
 
 /**
  * @brief Thread handling control of the robot.

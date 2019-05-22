@@ -151,7 +151,7 @@ private:
     /**
      * @brief Thread starting watchdog for startRobotWithWD.
      */
-    void Watchdog(void *arg);
+    void WatchdogTask(void *arg);
     
     /**
      * @brief Thread handling control of the robot.
