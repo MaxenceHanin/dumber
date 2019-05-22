@@ -66,6 +66,7 @@ private:
     ComRobot robot;
     Camera camera;
     
+    int start_with_WD;
     int robotStarted = 0;
     int move = MESSAGE_ROBOT_STOP;
     
@@ -92,7 +93,7 @@ private:
     RT_MUTEX mutex_robotStarted;
     RT_MUTEX mutex_move;
     RT_MUTEX mutex_camera;
-
+    RT_MUTEX mutex_watchdog;
     /**********************************************************************/
     /* Semaphores                                                         */
     /**********************************************************************/

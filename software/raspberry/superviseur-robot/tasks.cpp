@@ -30,6 +30,7 @@
 #define PRIORITY_TBATTERY 15
 #define PRIORITY_TCLOSECOMROBOT 14
 #define PRIORITY_TCLOSECOMMON 13
+#define PRIORITY_TWATCHDOG 18
 
 /*
  * Some remarks:
@@ -81,6 +82,10 @@ void Tasks::Init() {
         cerr << "Error mutex create: " << strerror(-err) << endl << flush;
         exit(EXIT_FAILURE);
     }
+    if (err = rt_mutex_create(&mutex_watchdog, NULL)) {
+        cerr << "Error mutex create: " << strerror(-err) << endl << flush;
+        exit(EXIT_FAILURE);
+    }
     cout << "Mutexes created successfully" << endl << flush;
 
     /**************************************************************************************/
@@ -115,6 +120,10 @@ void Tasks::Init() {
         exit(EXIT_FAILURE);
     }
     if (err = rt_sem_create(&sem_periodicImage, NULL, 0, S_FIFO)) {
+        cerr << "Error semaphore create: " << strerror(-err) << endl << flush;
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_sem_create(&sem_watchdog, NULL, 0, S_FIFO)) {
         cerr << "Error semaphore create: " << strerror(-err) << endl << flush;
         exit(EXIT_FAILURE);
     }
@@ -342,10 +351,14 @@ void Tasks::ReceiveFromMonTask(void *arg) {
             rt_sem_v(&sem_startCamera);
         } else if (msgRcv->CompareID(MESSAGE_ROBOT_START_WITHOUT_WD)) {
             //rt_sem_v(&sem_startRobot);
-	    start_with_WD = 0;
+            rt_mutex_acquire(&mutex_watchdog, TM_INFINITE);
+            start_with_WD = 0;
+            rt_mutex_release(&mutex_watchdog);
         } else if (msgRcv->CompareID(MESSAGE_ROBOT_START_WITH_WD)) {
             //rt_sem_v(&sem_startRobot);
-	    start_with_WD = 1;
+            rt_mutex_acquire(&mutex_watchdog, TM_INFINITE);
+            start_with_WD = 1;
+            rt_mutex_release(&mutex_watchdog);
         }else if (msgRcv->CompareID(MESSAGE_ROBOT_GO_FORWARD) ||
                 msgRcv->CompareID(MESSAGE_ROBOT_GO_BACKWARD) ||
                 msgRcv->CompareID(MESSAGE_ROBOT_GO_LEFT) ||
@@ -458,7 +471,7 @@ void Tasks::WatchdogTask(void *arg) {
     cout << "Start " << __PRETTY_FUNCTION__ << endl << flush;
     // Synchronization barrier (waiting that all tasks are starting and Robot is started)
     rt_sem_p(&sem_barrier, TM_INFINITE);
-    rt_sem_p(&sem_WD,TM_INFINITE);
+    rt_sem_p(&sem_watchdog,TM_INFINITE);
     /**************************************************************************************/
     /* The task starts here                                                               */
     /**************************************************************************************/
@@ -472,7 +485,7 @@ void Tasks::WatchdogTask(void *arg) {
     	msgReload = robot.Write(robot.Ping());
     	rt_mutex_release(&mutex_robot);
 
-		if(msgSend->GetID() == MESSAGE_ANSWER_ACK){
+		if(msgReload->GetID() == MESSAGE_ANSWER_ACK){
 			count_WD=3;
 		}
 		else{
@@ -504,9 +517,9 @@ void Tasks::StartRobotTask(void *arg) {
 	    rt_sem_p(&sem_startRobot, TM_INFINITE);
 	    cout << "Start robot without watchdog (";
 	    rt_mutex_acquire(&mutex_robot, TM_INFINITE);
-	    if(is_with_WD){
+	    if(start_with_WD){
 	    	msgSend = robot.Write(robot.StartWithWD());
-		rt_sem_v(&sem_WD);
+		//rt_sem_v(&sem_watchdog);
 	    }
 	    else {
 	    	msgSend = robot.Write(robot.StartWithoutWD());
