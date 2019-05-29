@@ -65,6 +65,10 @@ private:
     ComMonitor monitor;
     ComRobot robot;
     Camera camera;
+    int periodicOk = 1;
+    int position = 0;
+    Arena arena;
+    int arenaConfirm = -1;
     
     int start_with_WD = 0;
     int robotStarted = 0;
@@ -85,6 +89,8 @@ private:
     RT_TASK th_startCamera;
     RT_TASK th_periodicImage;
     RT_TASK th_watchdog;
+    RT_TASK th_closeCamera;
+    RT_TASK th_calibration;
     /**********************************************************************/
     /* Mutex                                                              */
     /**********************************************************************/
@@ -94,6 +100,10 @@ private:
     RT_MUTEX mutex_move;
     RT_MUTEX mutex_camera;
     RT_MUTEX mutex_watchdog;
+    RT_MUTEX mutex_periodicImage;
+    RT_MUTEX mutex_position;
+    RT_MUTEX mutex_arena;
+    RT_MUTEX mutex_arenaConfirm;
     /**********************************************************************/
     /* Semaphores                                                         */
     /**********************************************************************/
@@ -106,6 +116,8 @@ private:
     RT_SEM sem_startCamera;
     RT_SEM sem_periodicImage;
     RT_SEM sem_watchdog;
+    RT_SEM sem_closeCamera;
+    RT_SEM sem_calibration;
 
     /**********************************************************************/
     /* Message queues                                                     */
@@ -172,9 +184,19 @@ private:
     void StartCameraTask(void *arg);
     
     /**
+    * @brief Thread handling the closing of the Camera
+    */
+    void CloseCameraTask(void *arg);
+    
+    /**
     * @brief Thread handling the sending of a periodic image to the monitor
     */
     void PeriodicImageTask(void *arg);
+    
+    /**
+    * @brief Thread handling the calibration of the Arena
+    */
+    void CalibrationTask(void *arg);
     
     /**********************************************************************/
     /* Queue services                                                     */
