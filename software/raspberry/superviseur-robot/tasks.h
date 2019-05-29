@@ -66,7 +66,7 @@ private:
     ComRobot robot;
     Camera camera;
     
-    int start_with_WD;
+    int start_with_WD = 0;
     int robotStarted = 0;
     int move = MESSAGE_ROBOT_STOP;
     

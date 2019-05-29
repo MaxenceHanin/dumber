@@ -42,9 +42,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/lib/img.o \
 	${OBJECTDIR}/lib/messages.o \
 	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/tasks.o \
-	${OBJECTDIR}/lib/AutoResetEvent.o \
-	${OBJECTDIR}/lib/Watchdog.o
+	${OBJECTDIR}/tasks.o
 
 
 # C Compiler Flags
@@ -110,16 +108,6 @@ ${OBJECTDIR}/tasks.o: tasks.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -D_WITH_TRACE_ -D__FOR_PC__ -D__WITH_ARUCO__ -I./ -I./lib -I/usr/xenomai/include -I/usr/xenomai/include/mercury `pkg-config --cflags opencv`   -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/tasks.o tasks.cpp
-
-${OBJECTDIR}/lib/AutoResetEvent.o: lib/AutoResetEvent.cpp
-	${MKDIR} -p ${OBJECTDIR}/lib
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -D_WITH_TRACE_ -D__FOR_PC__ -D__WITH_ARUCO__ -I./ -I./lib -I/usr/xenomai/include -I/usr/xenomai/include/mercury `pkg-config --cflags opencv`   -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lib/AutoResetEvent.o lib/AutoResetEvent.cpp
-
-${OBJECTDIR}/lib/Watchdog.o: lib/Watchdog.cpp
-	${MKDIR} -p ${OBJECTDIR}/lib
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -D_WITH_TRACE_ -D__FOR_PC__ -D__WITH_ARUCO__ -I./ -I./lib -I/usr/xenomai/include -I/usr/xenomai/include/mercury `pkg-config --cflags opencv`   -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/lib/Watchdog.o lib/Watchdog.cpp
 
 # Subprojects
 .build-subprojects:

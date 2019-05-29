@@ -245,10 +245,10 @@ void Tasks::Run() {
         cerr << "Error task start: " << strerror(-err) << endl << flush;
         exit(EXIT_FAILURE);
     }
-    if (err = rt_task_start(&th_watchdog, (void(*)(void*)) & Tasks::WatchdogTask, this)) {
+    /*if (err = rt_task_start(&th_watchdog, (void(*)(void*)) & Tasks::WatchdogTask, this)) {
         cerr << "Error task start: " << strerror(-err) << endl << flush;
         exit(EXIT_FAILURE);
-    }
+    }*/
 
     cout << "Tasks launched" << endl << flush;
 }
@@ -476,23 +476,25 @@ void Tasks::WatchdogTask(void *arg) {
     /* The task starts here                                                               */
     /**************************************************************************************/
     Message * msgReload;
-    int count_WD =3;
+    int count_WD =0;
     rt_task_set_periodic(NULL, TM_NOW, 1000000000);
     
-    while (count_WD>0) {
+    while (count_WD<3) {
+        
         rt_task_wait_period(NULL);
   	rt_mutex_acquire(&mutex_robot, TM_INFINITE);
     	msgReload = robot.Write(robot.ReloadWD());
     	rt_mutex_release(&mutex_robot);
 
-		if(msgReload->GetID() == MESSAGE_ANSWER_ACK){
-			count_WD=3;
-		}
-		else{
-			count_WD--;
-		}
+	if(msgReload->GetID() == MESSAGE_ANSWER_ACK){
+            count_WD=0;
 	}
-	cout << "connexion lost with robot"; //msg send when robot is disconnected
+	else{
+            count_WD++;
+	}
+	}
+        //msg send when robot is disconnected
+	cout << "connexion lost with robot";
 	WriteInQueue(&q_messageToMon,new Message(MESSAGE_ANSWER_ROBOT_TIMEOUT));
 
 	//close com robot
@@ -515,29 +517,33 @@ void Tasks::StartRobotTask(void *arg) {
     while(1) {
 	    Message * msgSend;
 	    rt_sem_p(&sem_startRobot, TM_INFINITE);
-	    cout << "Start robot without watchdog (";
 	    rt_mutex_acquire(&mutex_robot, TM_INFINITE);
 	    if(start_with_WD){
+                cout << "Start robot with watchdog (";
 	    	msgSend = robot.Write(robot.StartWithWD());
-		//rt_sem_v(&sem_watchdog);
 	    }
 	    else {
+                cout << "Start robot without watchdog (";
 	    	msgSend = robot.Write(robot.StartWithoutWD());
 	    }
-		    rt_mutex_release(&mutex_robot);
-		    cout << msgSend->GetID();
-		    cout << ")" << endl;
+            rt_mutex_release(&mutex_robot);
+            cout << msgSend->GetID();
+            cout << ")" << endl;
 
-		    cout << "Movement answer: " << msgSend->ToString() << endl << flush;
-		    WriteInQueue(&q_messageToMon, msgSend);  // msgSend will be deleted by sendToMon
+            cout << "Movement answer: " << msgSend->ToString() << endl << flush;
+            WriteInQueue(&q_messageToMon, msgSend);  // msgSend will be deleted by sendToMon
 
-		    if (msgSend->GetID() == MESSAGE_ANSWER_ACK) {
-			rt_mutex_acquire(&mutex_robotStarted, TM_INFINITE);
-			robotStarted = 1;
-			rt_mutex_release(&mutex_robotStarted);
-		    }
+            if (msgSend->GetID() == MESSAGE_ANSWER_ACK) {
+                rt_mutex_acquire(&mutex_robotStarted, TM_INFINITE);
+                robotStarted = 1;
+                rt_mutex_release(&mutex_robotStarted);
+            }
+            if(start_with_WD){
+                rt_sem_v(&sem_watchdog);
+	    }
     }
-} 
+}
+
 
 /**
  * @brief Thread handling control of the robot.
